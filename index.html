@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Cafe Tica - Artisan Cafe & Sandwich Animation</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&family=Playfair+Display:wght@500;600;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-container": "#454544",
+                        "primary-fixed": "#ffe088",
+                        "surface-bright": "#3a3939",
+                        "on-tertiary": "#313030",
+                        "surface-dim": "#131313",
+                        "surface-container-lowest": "#0e0e0e",
+                        "outline": "#99907c",
+                        "on-secondary-container": "#b9baa3",
+                        "on-primary": "#3c2f00",
+                        "inverse-on-surface": "#313030",
+                        "secondary-fixed-dim": "#c8c8b0",
+                        "surface-container-low": "#1c1b1b",
+                        "surface-container-high": "#2a2a2a",
+                        "on-primary-container": "#554300",
+                        "tertiary": "#d0cdcd",
+                        "on-secondary-fixed-variant": "#474836",
+                        "inverse-surface": "#e5e2e1",
+                        "on-secondary": "#303221",
+                        "surface": "#131313",
+                        "primary": "#f2ca50",
+                        "on-surface": "#e5e2e1",
+                        "primary-fixed-dim": "#e9c349",
+                        "tertiary-container": "#b4b2b2",
+                        "inverse-primary": "#735c00",
+                        "surface-container": "#201f1f",
+                        "error": "#ffb4ab",
+                        "outline-variant": "#4d4635",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-highest": "#353534",
+                        "on-tertiary-fixed": "#1c1b1b",
+                        "on-tertiary-fixed-variant": "#474746",
+                        "on-secondary-fixed": "#1b1d0e",
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "error-container": "#93000a",
+                        "surface-variant": "#353534",
+                        "surface-tint": "#e9c349",
+                        "primary-container": "#d4af37",
+                        "on-primary-fixed-variant": "#574500",
+                        "secondary-container": "#494a38",
+                        "secondary": "#c8c8b0",
+                        "on-surface-variant": "#d0c5af",
+                        "on-primary-fixed": "#241a00",
+                        "secondary-fixed": "#e4e4cc",
+                        "background": "#131313",
+                        "on-error": "#690005",
+                        "on-background": "#e5e2e1",
+                        "tertiary-fixed": "#e5e2e1"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "section-gap": "120px",
+                        "container-max": "1280px",
+                        "margin-desktop": "64px",
+                        "gutter": "24px",
+                        "unit": "8px",
+                        "margin-mobile": "20px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Montserrat"],
+                        "label-md": ["Montserrat"],
+                        "headline-lg": ["Playfair Display"],
+                        "headline-lg-mobile": ["Playfair Display"],
+                        "headline-md": ["Playfair Display"],
+                        "display-lg": ["Playfair Display"],
+                        "body-lg": ["Montserrat"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "label-md": ["12px", { "lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "600" }],
+                        "headline-lg": ["40px", { "lineHeight": "1.2", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["32px", { "lineHeight": "1.2", "fontWeight": "600" }],
+                        "headline-md": ["28px", { "lineHeight": "1.3", "fontWeight": "500" }],
+                        "display-lg": ["64px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "letterSpacing": "0.01em", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glow-hover:hover {
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.15);
+        }
+
+        .text-glow {
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+        }
+
+        /* Canvas Scroll Animation Styles */
+        #animation-container {
+            height: 400vh;
+            /* scroll length for the animation */
+            position: relative;
+            background-color: #000;
+        }
+
+        .sticky-canvas-wrapper {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        #scroll-canvas {
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        #website-content {
+            position: relative;
+            z-index: 10;
+            background-color: #131313;
+        }
+    </style>
+</head>
+
+<body class="bg-background text-on-background font-body-md antialiased selection:bg-primary/30 selection:text-primary">
+
+    <!-- Header Component -->
+    <header
+        class="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md dark:bg-background/80 border-b border-on-surface/10 shadow-none">
+        <div class="flex justify-between items-center px-margin-desktop py-unit-3 max-w-container-max mx-auto">
+            <div class="font-headline-md text-headline-md tracking-tighter text-primary dark:text-primary-fixed-dim">
+                CAFE TICA
+            </div>
+            <nav class="hidden md:flex items-center space-x-8">
+                <a class="text-primary font-bold border-b-2 border-primary pb-1 font-label-md text-label-md"
+                    href="#">Home</a>
+                <a class="text-on-surface/70 hover:text-primary transition-colors duration-300 font-label-md text-label-md"
+                    href="#menu-section">Menu</a>
+                <a class="text-on-surface/70 hover:text-primary transition-colors duration-300 font-label-md text-label-md"
+                    href="#">Offers</a>
+                <a class="text-on-surface/70 hover:text-primary transition-colors duration-300 font-label-md text-label-md"
+                    href="#">About</a>
+                <a class="text-on-surface/70 hover:text-primary transition-colors duration-300 font-label-md text-label-md"
+                    href="#contact-section">Contact</a>
+                <a class="text-on-surface/70 hover:text-primary transition-colors duration-300 font-label-md text-label-md"
+                    href="#location-section">Location</a>
+            </nav>
+            <div class="flex items-center space-x-4">
+                <button
+                    class="text-primary dark:text-primary-fixed-dim hover:text-primary-fixed-dim transition-all duration-300 transform hover:scale-110">
+                    <span class="material-symbols-outlined"
+                        style="font-variation-settings: 'FILL' 0;">shopping_cart</span>
+                </button>
+                <button class="md:hidden text-primary">
+                    <span class="material-symbols-outlined">menu</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Scroll Animation Section at the Top -->
+    <div id="animation-container">
+        <div class="sticky-canvas-wrapper">
+            <canvas id="scroll-canvas"></canvas>
+            <div id="animation-text-overlay"
+                class="absolute inset-0 bg-black/75 flex flex-col items-center justify-center pointer-events-none transition-opacity duration-1000">
+                <h1 class="font-display-lg text-[6vw] text-primary text-glow drop-shadow-2xl text-center leading-tight">
+                    Cafe Tica</h1>
+                <p class="font-headline-md text-[3vw] text-on-background mt-4 drop-shadow-xl text-center max-w-2xl">
+                    Savor the Perfect Bite.
+                </p>
+                <p class="font-body-lg text-[1.5vw] text-on-surface-variant mt-4 text-center max-w-xl">
+                    Layers of flavor. Crafted for you.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div id="website-content">
+        <main>
+            <!-- Hero Section -->
+            <section
+                class="max-w-container-max mx-auto px-margin-desktop py-section-gap grid grid-cols-1 md:grid-cols-2 gap-gutter items-center min-h-[80vh]">
+                <div class="space-y-8 z-10">
+                    <h1 class="font-display-lg text-display-lg text-on-background leading-tight text-glow">
+                        Sip into <br /> Sophistication: <br /> Experience Artisan Brewing
+                    </h1>
+                    <p class="font-body-lg text-body-lg text-on-surface-variant max-w-md">
+                        Immerse yourself in a quiet luxury experience. Discover our meticulously crafted blends and
+                        gourmet pairings in an atmosphere designed for the discerning palate.
+                    </p>
+                    <div class="flex items-center space-x-4 pt-4">
+                        <button
+                            class="bg-primary text-on-primary font-label-md text-label-md px-8 py-4 rounded-full hover:scale-105 transition-transform duration-300 flex items-center space-x-2">
+                            <span>Explore Menu</span>
+                            <span class="material-symbols-outlined text-[18px]">arrow_right_alt</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="relative h-[500px] w-full hidden md:block">
+                    <img alt="Hero Artisan Coffee"
+                        class="absolute inset-0 w-full h-full object-cover rounded-xl shadow-[0_0_40px_rgba(212,175,55,0.1)]"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWyCGf-gr0A07_qjWlZBdxyqfPirhFV9w-FPTvyqbAHsyPQ3w5-8cuolIe42unJbbOmW7hsdATdfJUX71Yg6JGo-1ls6RhNrwthDkehi-FxdvtXfwK7p87dUuGKeEcjHUkGs-iWejMrETA6xgGT3OXQIbLuMk0gO9X6z5znWl7KJeSy0X_0DqO5Xb_7x0wRPi06g73LmbkXCpYJ-fDTQTWGYWr0OPt1rdDObhBYRNO4dYql3iCoZDmGfauASbNs4P2sB_p62klBhyT" />
+                    <div class="absolute inset-0 bg-gradient-to-r from-background via-transparent to-transparent"></div>
+                </div>
+            </section>
+
+            <!-- Promotional Row -->
+            <section class="max-w-container-max mx-auto px-margin-desktop pb-section-gap">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+                    <!-- Large Banner -->
+                    <div
+                        class="lg:col-span-2 relative h-[300px] rounded-xl overflow-hidden group cursor-pointer border border-outline/20">
+                        <img alt="Signature Pairing Promo"
+                            class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBjj0LrDOw-U0b_X72Bqcedg69SIHCJFLhgUIxWZVvFN83RfoaYDffosuKiDgMu_WnTAyyqc1zW5D_7fPKKvF-_412WoFDLfFIgrl9f0CtWsgdGewQAVI28rkRTSkDx7o177FjLlEICrR8BBVocEOddNaWt1j-96ZzJrt-y8a9LX0GcurxWZ-TMM4FIgjrA-7yefJBK2f5ztE0IWzbZHWDWDmZeMXwQ0rbGRX0WLyeeQ6TvnYC3gg9eLXbxzRNwe11yTgLsOsZJNjAH" />
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#0B0B0B] via-[#0B0B0B]/80 to-transparent">
+                        </div>
+                        <div class="absolute bottom-0 left-0 p-8 w-full">
+                            <span
+                                class="inline-block px-3 py-1 bg-primary/20 border border-primary/30 text-primary font-label-md text-label-md rounded-full mb-4 backdrop-blur-sm">LIMITED
+                                TIME</span>
+                            <h3
+                                class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-background mb-2">
+                                Signature Pairing: Coffee + Wrap Combo</h3>
+                            <p
+                                class="font-body-md text-body-md text-on-surface-variant flex items-center justify-between">
+                                <span>Save 15% on our most requested pairing.</span>
+                                <span
+                                    class="text-primary font-semibold flex items-center group-hover:translate-x-2 transition-transform">Claim
+                                    Offer <span class="material-symbols-outlined ml-1">arrow_forward</span></span>
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Stacked Cards -->
+                    <div class="flex flex-col gap-gutter">
+                        <div
+                            class="flex-1 bg-surface-container-low rounded-xl p-6 border border-outline/10 glow-hover transition-all duration-300 flex flex-col justify-center relative overflow-hidden group">
+                            <div class="absolute -right-4 -top-4 w-24 h-24 bg-primary/5 rounded-full blur-2xl"></div>
+                            <h4 class="font-headline-md text-headline-md text-on-background mb-2">Morning Ritual</h4>
+                            <p class="font-body-md text-body-md text-on-surface-variant mb-4 text-sm">Complimentary
+                                pastry with any V60 Pour Over before 10 AM.</p>
+                            <span class="text-primary font-label-md text-label-md">LEARN MORE</span>
+                        </div>
+                        <div
+                            class="flex-1 bg-surface-container-low rounded-xl p-6 border border-outline/10 glow-hover transition-all duration-300 flex flex-col justify-center relative overflow-hidden group">
+                            <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-primary/5 rounded-full blur-2xl"></div>
+                            <h4 class="font-headline-md text-headline-md text-on-background mb-2">Evening Unwind</h4>
+                            <p class="font-body-md text-body-md text-on-surface-variant mb-4 text-sm">Half-price
+                                artisanal flatbreads after 6 PM daily.</p>
+                            <span class="text-primary font-label-md text-label-md">LEARN MORE</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Full Cafe Menu Section -->
+            <section id="menu-section" class="bg-white py-20 px-margin-desktop text-gray-800">
+                <div class="max-w-container-max mx-auto">
+                    <div class="text-center mb-16">
+                        <h2 class="font-headline-lg text-4xl md:text-5xl text-[#8b0000] mb-4">Cafética Menu</h2>
+                        <p class="font-body-md text-gray-500">Discover our carefully crafted selections.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
+                        <!-- Column 1 -->
+                        <div class="space-y-16">
+                            <!-- 1. Daily Special -->
+                            <div>
+                                <h3 class="text-2xl font-bold text-[#8b0000] border-b-2 border-[#8b0000] pb-2 mb-4">1. Daily Special</h3>
+                                <p class="text-sm text-gray-500 italic mb-6">Note: Sandwich of the day with a side of samosa chips or fresh veggies, also includes 1 choice of soup, drink, or cookie.</p>
+                                
+                                <div class="flex justify-between items-baseline border-b border-gray-200 pb-3 mb-3">
+                                    <span class="font-semibold text-lg">Full Sandwich</span>
+                                    <span class="font-bold text-[#8b0000] ml-4">$10.50</span>
+                                </div>
+                                <div class="flex justify-between items-baseline border-b border-gray-200 pb-3 mb-3">
+                                    <span class="font-semibold text-lg">Half Sandwich</span>
+                                    <span class="font-bold text-[#8b0000] ml-4">$8.50</span>
+                                </div>
+                            </div>
+
+                            <!-- 2. Breakfast Sandwiches -->
+                            <div>
+                                <h3 class="text-2xl font-bold text-[#8b0000] border-b-2 border-[#8b0000] pb-2 mb-4">2. Breakfast Sandwiches</h3>
+                                <p class="text-sm text-gray-500 italic mb-6">With Coffee or Tea +$2</p>
+
+                                <div class="mb-4 border-b border-gray-200 pb-4">
+                                    <div class="flex justify-between items-baseline mb-1">
+                                        <span class="font-semibold text-lg">Breakfast Sandwich</span>
+                                        <span class="font-bold text-[#8b0000] ml-4">$6.00</span>
+                                    </div>
+                                    <p class="text-gray-600 text-sm">2 eggs, cheese and tomato with choice of Bacon, Sausage, Ham or Spinach. On either bagel, multigrain, white, ciabatta, wrap.</p>
+                                </div>
+                                <div class="mb-4 border-b border-gray-200 pb-4">
+                                    <div class="flex justify-between items-baseline mb-1">
+                                        <span class="font-semibold text-lg">Salmon Breakfast Sandwich</span>
+                                        <span class="font-bold text-[#8b0000] ml-4">$7.50</span>
+                                    </div>
+                                    <p class="text-gray-600 text-sm">Smoked salmon, 2 eggs, cheese, cream cheese, cucumber.</p>
+                                </div>
+                            </div>
+
+                            <!-- 3. Salads -->
+                            <div>
+                                <h3 class="text-2xl font-bold text-[#8b0000] border-b-2 border-[#8b0000] pb-2 mb-4">3. Salads</h3>
+                                <p class="text-sm text-gray-500 italic mb-6">Includes ranch or balsamic dressing. Add a soup to any Salad or Sandwich for just $3.</p>
+
+                                <div class="mb-4 border-b border-gray-200 pb-4">
+                                    <div class="flex justify-between items-baseline mb-1">
+                                        <span class="font-semibold text-lg">Avocado Chicken Salad</span>
+                                        <span class="font-bold text-[#8b0000] ml-4 whitespace-nowrap">Full: $10.00 / Half: $7.50</span>
+                                    </div>
+                                    <p class="text-gray-600 text-sm">Chicken salad, avocado, leafy green lettuce, parmesan cheese, chopped tomato, cucumber, bell peppers, pickle wedges, and baby carrots.</p>
+                                </div>
+                                <div class="mb-4 border-b border-gray-200 pb-4">
+                                    <div class="flex justify-between items-baseline mb-1">
+                                        <span class="font-semibold text-lg">Chef Salad</span>
+                                        <span class="font-bold text-[#8b0000] ml-4 whitespace-nowrap">Full: $10.00 / Half: $7.50</span>
+                                    </div>
+                                    <p class="text-gray-600 text-sm">Roast beef, ham, leafy green lettuce, cheese, chopped tomato, cucumber, bell peppers, baby carrots, and pickle wedges.</p>
+                                </div>
+                                <div class="mb-4 border-b border-gray-200 pb-4">
+                                    <div class="flex justify-between items-baseline mb-1">
+                                        <span class="font-semibold text-lg">Green Salad</span>
+                                        <span class="font-bold text-[#8b0000] ml-4 whitespace-nowrap">Full: $7.00 / Half: $5.50</span>
+                                    </div>
+                                    <p class="text-gray-600 text-sm">Leafy green lettuce, chopped tomato, cucumber, bell peppers, shredded cheddar, parmesan cheese, baby carrots, and pickle wedges.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Column 2 -->
+                        <div class="space-y-16">
+                            <!-- 4. Signature Sandwiches -->
+                            <div>
+                                <h3 class="text-2xl font-bold text-[#8b0000] border-b-2 border-[#8b0000] pb-2 mb-4">4. Signature Sandwiches</h3>
+                                <p class="text-sm text-gray-500 italic mb-6">Full: $10.50 / Half: $8.00<br>All signature sandwiches include a choice of samosa chips or fresh veggies.</p>
+
+                                <div class="mb-4 border-b border-gray-200 pb-4">
+                                    <span class="font-semibold text-lg block mb-1">Chicken Salad Club</span>
+                                    <p class="text-gray-600 text-sm">Chunks of chicken, mayonnaise, bacon, swiss cheese, and tomato on a ciabatta bun.</p>
+                                </div>
+                                <div class="mb-4 border-b border-gray-200 pb-4">
+                                    <span class="font-semibold text-lg block mb-1">Turkey Pesto</span>
+                                    <p class="text-gray-600 text-sm">Sliced turkey on a ciabatta bun with swiss cheese, mayonnaise, pesto, and tomato.</p>
+                                </div>
+                                <div class="mb-4 border-b border-gray-200 pb-4">
+                                    <span class="font-semibold text-lg block mb-1">Veggie Melt</span>
+                                    <p class="text-gray-600 text-sm">A bed of sweet peppers, cucumbers, red onions, tomato, sun-dried tomato, avocado, mustard, hummus, and swiss cheese on a ciabatta bun.</p>
+                                </div>
+                                <div class="mb-4 border-b border-gray-200 pb-4">
+                                    <span class="font-semibold text-lg block mb-1">Custom Sandwich</span>
+                                    <p class="text-gray-600 text-sm">Choice of 1 meat (roasted beef, chicken salad, turkey, ham, salami, pulled pork, tuna) and all the fixing.</p>
+                                </div>
+                                <div class="mb-4 border-b border-gray-200 pb-4">
+                                    <div class="flex justify-between items-baseline mb-1">
+                                        <span class="font-semibold text-lg">Grilled Cheese</span>
+                                        <span class="font-bold text-[#8b0000] ml-4">$7.50</span>
+                                    </div>
+                                    <p class="text-gray-600 text-sm">Cheddar cheese, parmesan cheese, green onion, butter, and a touch of black pepper on white or multigrain bread.</p>
+                                </div>
+                                
+                                <div class="mt-6 p-4 bg-gray-50 border border-gray-200 rounded text-sm text-gray-600">
+                                    <strong class="text-[#8b0000]">Add-ons:</strong> Add soup or side salad +$3 | Extra meat, avocado, pesto, hummus, extra cheese +$1.50 for each item.
+                                </div>
+                            </div>
+
+                            <!-- 5. Snacks -->
+                            <div>
+                                <h3 class="text-2xl font-bold text-[#8b0000] border-b-2 border-[#8b0000] pb-2 mb-4">5. Snacks</h3>
+                                <div class="flex justify-between items-baseline border-b border-gray-200 pb-3 mb-3"><span class="font-semibold text-lg">House baked cookie</span><span class="font-bold text-[#8b0000] ml-4">$1.75</span></div>
+                                <div class="flex justify-between items-baseline border-b border-gray-200 pb-3 mb-3"><span class="font-semibold text-lg">Pastry and squares</span><span class="font-bold text-[#8b0000] ml-4">$3.00</span></div>
+                                <div class="flex justify-between items-baseline border-b border-gray-200 pb-3 mb-3"><span class="font-semibold text-lg">Daily soup</span><span class="font-bold text-[#8b0000] ml-4">Sm: $4.50 / Lg: $6.50</span></div>
+                                <div class="flex justify-between items-baseline border-b border-gray-200 pb-3 mb-3"><span class="font-semibold text-lg">Bag of samosa chips</span><span class="font-bold text-[#8b0000] ml-4">Sm: $3.00 / Lg: $6.00</span></div>
+                                <div class="flex justify-between items-baseline border-b border-gray-200 pb-3 mb-3"><span class="font-semibold text-lg">Buttered Toast</span><span class="font-bold text-[#8b0000] ml-4">$1.50</span></div>
+                                <div class="flex justify-between items-baseline border-b border-gray-200 pb-3 mb-3"><span class="font-semibold text-lg">Cream cheese bagel</span><span class="font-bold text-[#8b0000] ml-4">$3.50</span></div>
+                            </div>
+
+                            <!-- 6. Drinks -->
+                            <div>
+                                <h3 class="text-2xl font-bold text-[#8b0000] border-b-2 border-[#8b0000] pb-2 mb-4">6. Drinks</h3>
+                                <p class="text-sm text-gray-500 italic mb-6">All drinks can be iced for no charge</p>
+
+                                <div class="flex justify-between items-baseline border-b border-gray-200 pb-3 mb-3"><span class="font-semibold text-lg">Coffee</span><span class="font-bold text-[#8b0000] ml-4">$2.50 / $3.00</span></div>
+                                <div class="flex justify-between items-baseline border-b border-gray-200 pb-3 mb-3"><span class="font-semibold text-lg">Espresso</span><span class="font-bold text-[#8b0000] ml-4">$2.50</span></div>
+                                <div class="flex justify-between items-baseline border-b border-gray-200 pb-3 mb-3"><span class="font-semibold text-lg">Americano</span><span class="font-bold text-[#8b0000] ml-4">$3.00</span></div>
+                                <div class="flex justify-between items-baseline border-b border-gray-200 pb-3 mb-3"><span class="font-semibold text-lg">Cappuccino</span><span class="font-bold text-[#8b0000] ml-4">$3.00</span></div>
+                                <div class="flex justify-between items-baseline border-b border-gray-200 pb-3 mb-3"><span class="font-semibold text-lg">Latte</span><span class="font-bold text-[#8b0000] ml-4">$3.50 / Lg: $4.00</span></div>
+                                <div class="flex justify-between items-baseline border-b border-gray-200 pb-3 mb-3"><span class="font-semibold text-lg">Mocha</span><span class="font-bold text-[#8b0000] ml-4">$4.00 / Lg: $4.75</span></div>
+                                <div class="flex justify-between items-baseline border-b border-gray-200 pb-3 mb-3"><span class="font-semibold text-lg">London fog</span><span class="font-bold text-[#8b0000] ml-4">$4.00 / Lg: $4.75</span></div>
+                                <div class="flex justify-between items-baseline border-b border-gray-200 pb-3 mb-3"><span class="font-semibold text-lg">Hot cocoa</span><span class="font-bold text-[#8b0000] ml-4">$3.50 / Lg: $4.00</span></div>
+                                <div class="flex justify-between items-baseline border-b border-gray-200 pb-3 mb-3"><span class="font-semibold text-lg">Tea</span><span class="font-bold text-[#8b0000] ml-4">$3.00</span></div>
+                                <div class="flex justify-between items-baseline border-b border-gray-200 pb-3 mb-3"><span class="font-semibold text-lg">Espresso Frappe</span><span class="font-bold text-[#8b0000] ml-4">$4.00 / $5.00</span></div>
+                                <div class="flex justify-between items-baseline border-b border-gray-200 pb-3 mb-3"><span class="font-semibold text-lg">Smoothie (Blueberry - Mango)</span><span class="font-bold text-[#8b0000] ml-4">$4.50 / $5.50</span></div>
+                                <div class="flex justify-between items-baseline border-b border-gray-200 pb-3 mb-3"><span class="font-semibold text-lg">Bottled Water</span><span class="font-bold text-[#8b0000] ml-4">$2.00 / Lg: $3.75</span></div>
+
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- Story Section -->
+
+            <section class="bg-surface-container-lowest border-t border-b border-on-surface/5 py-section-gap">
+                <div
+                    class="max-w-container-max mx-auto px-margin-desktop grid grid-cols-1 md:grid-cols-2 gap-gutter items-center">
+                    <div class="order-2 md:order-1 relative h-[600px] rounded-xl overflow-hidden">
+                        <img alt="Barista pouring latte art" class="w-full h-full object-cover"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2xaOr3pPqGGo1nBr1kIxJLvSYWMAcfAZ3CM4oKM07IZ7fnPXGUic6wDJbjWgN48rjz0CI1MR-mmQeizXm61eXOXkM5HlXAerGyKNoZcxtuZRGKutgRsfSyPRc8vKQimiPK539Zm3SV7a4ZqziOkIVDg1kSFggGdEQHz7IZMTBLKRLAHRV5t15bH6eA7HbYpUM-uqp_E2VLVfEtG1czz670N7woyC7egPMKmQQSJoJrSmEz8wFmYLxJ_VKsGyBqzPZ-lMHZ6s9RwBp" />
+                        <div class="absolute inset-0 border border-outline/10 rounded-xl"></div>
+                    </div>
+                    <div class="order-1 md:order-2 space-y-8 md:pl-12">
+                        <h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-background">Our
+                            Heritage: <br /> Crafted with Passion</h2>
+                        <p class="font-body-lg text-body-lg text-on-surface-variant">
+                            Since our inception, Cafe Tica has been a sanctuary for those who appreciate the finer
+                            details. We source only the rarest single-origin beans, roasted in small batches to preserve
+                            their distinct, complex profiles.
+                        </p>
+                        <div class="space-y-6 pt-4 border-t border-outline/10">
+                            <div class="flex items-center space-x-4">
+                                <div
+                                    class="w-12 h-12 rounded-full border border-primary/30 flex items-center justify-center text-primary bg-primary/5">
+                                    <span class="material-symbols-outlined">eco</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-headline-md text-headline-md text-on-background text-lg">100%
+                                        Organic Beans</h4>
+                                    <p class="font-body-md text-body-md text-on-surface-variant text-sm">Sustainably
+                                        sourced from premium estates.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Contact Section -->
+        <section id="contact-section" class="max-w-container-max mx-auto px-margin-desktop py-20 mt-12 border-t border-on-surface/10 text-center flex flex-col items-center">
+            <div class="w-16 h-16 rounded-full border border-primary/30 flex items-center justify-center text-primary bg-primary/5 mb-6">
+                <span class="material-symbols-outlined text-3xl">phone_in_talk</span>
+            </div>
+            <h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-background mb-4">Get In Touch</h2>
+            <p class="font-body-md text-body-md text-on-surface-variant mb-8 max-w-lg mx-auto">Have a question or want to make a reservation? Give us a call, and we will be happy to assist you.</p>
+            <a href="tel:+16044844775" class="inline-flex items-center space-x-3 bg-primary text-on-primary px-8 py-4 rounded-full font-label-md text-label-md text-lg hover:scale-105 transition-transform duration-300 shadow-[0_0_20px_rgba(212,175,55,0.2)]">
+                <span>+1 (604) 484-4775</span>
+            </a>
+        </section>
+
+        <!-- Location Section -->
+        <section id="location-section" class="max-w-container-max mx-auto px-margin-desktop py-20 mt-4 border-t border-on-surface/10">
+            <div class="text-center mb-10">
+                <div class="w-16 h-16 rounded-full border border-primary/30 flex items-center justify-center text-primary bg-primary/5 mb-6 mx-auto">
+                    <span class="material-symbols-outlined text-3xl">location_on</span>
+                </div>
+                <h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-background mb-4">Visit Us</h2>
+                <p class="font-body-lg text-body-lg text-on-surface-variant mb-2">843 Seymour St, Vancouver, BC V6B 3L4, Canada</p>
+            </div>
+            <div class="w-full h-[400px] rounded-xl overflow-hidden border border-on-surface/10 shadow-[0_0_20px_rgba(212,175,55,0.05)]">
+                <iframe src="https://maps.google.com/maps?q=843%20Seymour%20St,%20Vancouver,%20BC%20V6B%203L4,%20Canada&t=&z=15&ie=UTF8&iwloc=&output=embed" width="100%" height="100%" frameborder="0" style="border:0" allowfullscreen loading="lazy"></iframe>
+            </div>
+        </section>
+
+        <!-- Footer Component -->
+        <footer class="w-full bg-surface-container-lowest border-t border-on-surface/5">
+            <div
+                class="grid grid-cols-1 md:grid-cols-3 gap-gutter px-margin-desktop py-section-gap max-w-container-max mx-auto">
+                <div>
+                    <div class="font-headline-lg text-headline-lg text-primary mb-4">CAFE TICA</div>
+                    <p class="font-body-md text-body-md text-on-surface-variant text-sm max-w-xs">An exclusive artisan
+                        cafe experience. Quiet luxury, perfectly brewed.</p>
+                </div>
+                <div class="flex flex-col space-y-4">
+                    <h4 class="font-label-md text-label-md text-on-background tracking-widest mb-2">EXPLORE</h4>
+                    <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200"
+                        href="#">Our Story</a>
+                    <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200"
+                        href="#location-section">Locations</a>
+                </div>
+                <div class="flex flex-col space-y-4">
+                    <h4 class="font-label-md text-label-md text-on-background tracking-widest mb-2">LEGAL</h4>
+                    <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200"
+                        href="#">Privacy Policy</a>
+                </div>
+            </div>
+            <div class="border-t border-on-surface/5 px-margin-desktop py-6">
+                <p class="text-center font-label-md text-label-md text-on-surface-variant text-[10px]">
+                    © 2024 CAFE TICA. CRAFTED FOR THE DISCERNING PALATE.
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('scroll-canvas');
+        const context = canvas.getContext('2d');
+        const animationContainer = document.getElementById('animation-container');
+        const animationTextOverlay = document.getElementById('animation-text-overlay');
+
+        const frameCount = 160;
+        const currentFrame = index => (
+            `ezgif-3425e40f9ca33905-jpg/ezgif-frame-${index.toString().padStart(3, '0')}.jpg`
+        );
+
+        const preloadImages = () => {
+            for (let i = 1; i <= frameCount; i++) {
+                const img = new Image();
+                img.src = currentFrame(i);
+            }
+        };
+
+        const img = new Image();
+        img.src = currentFrame(1);
+
+        const setCanvasSize = () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            context.drawImage(img, 0, 0, canvas.width, canvas.height);
+        };
+
+        img.onload = () => {
+            setCanvasSize();
+        };
+
+        const updateImage = index => {
+            img.src = currentFrame(index);
+            context.drawImage(img, 0, 0, canvas.width, canvas.height);
+        };
+
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY - animationContainer.offsetTop;
+            const maxScroll = animationContainer.offsetHeight - window.innerHeight;
+
+            let scrollFraction = scrollY / maxScroll;
+            scrollFraction = Math.max(0, Math.min(1, scrollFraction));
+
+            const frameIndex = Math.min(
+                frameCount - 1,
+                Math.floor(scrollFraction * frameCount)
+            );
+
+            requestAnimationFrame(() => updateImage(frameIndex + 1));
+
+            // Fade out overlay when scroll reaches 30%
+            if (scrollFraction > 0.3) {
+                animationTextOverlay.style.opacity = 0;
+            } else {
+                animationTextOverlay.style.opacity = 1;
+            }
+        });
+
+        window.addEventListener('resize', setCanvasSize);
+
+        preloadImages();
+    </script>
+
+</body>
+
+</html>
+
