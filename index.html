@@ -726,7 +726,8 @@
 
     <script>
         const canvas = document.getElementById('scroll-canvas');
-        const context = canvas.getContext('2d');
+        // Optimization: disable alpha for faster compositing since we draw over the entire canvas
+        const context = canvas.getContext('2d', { alpha: false });
         const animationContainer = document.getElementById('animation-container');
         const animationTextOverlay = document.getElementById('animation-text-overlay');
 
@@ -735,18 +736,27 @@
             `ezgif-3425e40f9ca33905-jpg/ezgif-frame-${index.toString().padStart(3, '0')}.jpg`
         );
 
+        // 1. FULL IMAGE PRELOADING: Store images in memory array to prevent fetching on scroll
+        const images = [];
+
         const preloadImages = () => {
             for (let i = 1; i <= frameCount; i++) {
                 const img = new Image();
                 img.src = currentFrame(i);
+                images.push(img);
+                
+                // Draw the very first frame as soon as it's loaded to prevent blank canvas
+                if (i === 1) {
+                    img.onload = () => setCanvasSize();
+                }
             }
         };
 
-        const img = new Image();
-        img.src = currentFrame(1);
-
+        // 2. SMOOTH CANVAS DRAWING: Responsive draw function
         function drawCover(ctx, image) {
-            if (!image.width || !image.height) return;
+            // Ensure image is fully loaded before trying to draw
+            if (!image || !image.complete || image.naturalWidth === 0) return;
+            
             const imgRatio = image.width / image.height;
             const canvasRatio = canvas.width / canvas.height;
             let drawWidth, drawHeight, offsetX = 0, offsetY = 0;
@@ -761,26 +771,21 @@
                 offsetX = (canvas.width - drawWidth) / 2;
             }
 
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // Draw image covering the canvas completely
             ctx.drawImage(image, offsetX, offsetY, drawWidth, drawHeight);
         }
 
         const setCanvasSize = () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            drawCover(context, img);
+            // Draw current active frame, default to first frame if just initialized
+            updateCanvas();
         };
 
-        img.onload = () => {
-            setCanvasSize();
-        };
+        // Throttling flag
+        let isTicking = false;
 
-        const updateImage = index => {
-            img.src = currentFrame(index);
-            drawCover(context, img);
-        };
-
-        window.addEventListener('scroll', () => {
+        const updateCanvas = () => {
             const scrollY = window.scrollY - animationContainer.offsetTop;
             const maxScroll = animationContainer.offsetHeight - window.innerHeight;
 
@@ -792,7 +797,10 @@
                 Math.floor(scrollFraction * frameCount)
             );
 
-            requestAnimationFrame(() => updateImage(frameIndex + 1));
+            // Draw frame from preloaded memory array
+            if (images[frameIndex]) {
+                drawCover(context, images[frameIndex]);
+            }
 
             // Fade out overlay when scroll reaches 30%
             if (scrollFraction > 0.3) {
@@ -800,10 +808,31 @@
             } else {
                 animationTextOverlay.style.opacity = 1;
             }
-        });
 
-        window.addEventListener('resize', setCanvasSize);
+            // Reset ticking flag to allow next frame to be drawn
+            isTicking = false;
+        };
 
+        // GLOBAL SMOOTH SCROLL & THROTTLING: Use requestAnimationFrame for performant scroll event
+        window.addEventListener('scroll', () => {
+            if (!isTicking) {
+                window.requestAnimationFrame(() => {
+                    updateCanvas();
+                });
+                isTicking = true;
+            }
+        }, { passive: true }); // passive: true improves scroll performance
+
+        window.addEventListener('resize', () => {
+            if (!isTicking) {
+                window.requestAnimationFrame(() => {
+                    setCanvasSize();
+                });
+                isTicking = true;
+            }
+        }, { passive: true });
+
+        // Kickoff preloading when script executes
         preloadImages();
     </script>
 
